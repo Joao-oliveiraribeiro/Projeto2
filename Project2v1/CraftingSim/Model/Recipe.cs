@@ -3,25 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+
 namespace CraftingSim.Model
 {
+    /// <summary>
+    /// Concrete implementation of IRecipe
+    /// </summary>
     public class Recipe : IRecipe
     {
+        public string Name { get; }
+        public IReadOnlyDictionary<IMaterial, int> RequiredMaterials { get; }
+        public double SuccessRate { get; }
 
-        private readonly Inventory inventory;
-        private readonly Name name;
-
-        private readonly List<IMaterial, int> requiredMaterials;
-
-        private readonly SuccessRate successRate;
-
-        public Recipe(Inventory inventory, string name, double successRate)
+        public Recipe(string name, Dictionary<IMaterial, int> requiredMaterials, double successRate)
         {
             Name = name;
-            requiredMaterials = new List<IMaterial, int>();
-            SuccessRate = successRate
+            RequiredMaterials = new Dictionary<IMaterial, int>(requiredMaterials);
+            SuccessRate = successRate;
         }
 
-        public IReadOnlyDictionary<IMaterial, int> RequiredMaterials => RequiredMaterials;
+        public int CompareTo(IRecipe other)
+        {
+            if (other == null) return 1;
+            return string.Compare(Name, other.Name, StringComparison.OrdinalIgnoreCase);
+        }
+
     }
 }
