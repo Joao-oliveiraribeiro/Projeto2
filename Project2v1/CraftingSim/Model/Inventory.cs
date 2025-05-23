@@ -84,7 +84,63 @@ namespace CraftingSim.Model
         /// <param name="file">Path to the materials file</param>
         public void LoadMaterialsFromFile(string file)
         {
-            //TODO Implement Me
+            if (string.IsNullOrWhiteSpace(filePath))
+                throw new ArgumentException("O caminho do ficheiro não pode ser vazio.", nameof(filePath));
+
+            if (!File.Exists(filePath))
+                throw new FileNotFoundException("Ficheiro de materiais não encontrado.", filePath);
+
+            try
+            {
+                using (var reader = new StreamReader(filePath))
+                {
+                    string line;
+                    int lineNumber = 0;
+
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        lineNumber++;
+                        // Ignora linhas em branco
+                        if (string.IsNullOrWhiteSpace(line))
+                            continue;
+
+                        // Espera formato: id,nome,quantidade
+                        string[] parts = line.Split(',');
+                        if (parts.Length != 3)
+                        {
+                            Console.WriteLine($"Linha {lineNumber}: formato inválido. Deve ser 'id,nome,quantidade'.");
+                            continue;
+                        }
+
+                        // Tenta parse de id e quantidade
+                        if (!int.TryParse(parts[0].Trim(), out int id))
+                        {
+                            Console.WriteLine($"Linha {lineNumber}: id inválido ('{parts[0]}'). Deve ser um número inteiro.");
+                            continue;
+                        }
+
+                        string name = parts[1].Trim();
+                        if (string.IsNullOrEmpty(name))
+                        {
+                            Console.WriteLine($"Linha {lineNumber}: nome vazio ou inválido.");
+                            continue;
+                        }
+
+                        if (!int.TryParse(parts[2].Trim(), out int quantity))
+                        {
+                            Console.WriteLine($"Linha {lineNumber}: quantidade inválida ('{parts[2]}'). Deve ser um número inteiro.");
+                            continue;
+                        }
+
+                        if (quantity < 0)
+                        {
+                            Console.WriteLine($"Linha {lineNumber}: quantidade negativa (\"{quantity}\"). Ignorando linha.");
+                            continue;
+                        }
+
+                        // Cria um novo material e adiciona ao inventário
+                        IMaterial material = new Material(id, name);
+                        AddMaterial(material, quantity);
         }
     }
 }
