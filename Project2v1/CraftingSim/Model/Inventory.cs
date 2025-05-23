@@ -100,11 +100,11 @@ namespace CraftingSim.Model
                     while ((line = reader.ReadLine()) != null)
                     {
                         lineNumber++;
-                        // Ignora linhas em branco
+                        
                         if (string.IsNullOrWhiteSpace(line))
                             continue;
 
-                        // Espera formato: id,nome,quantidade
+                        
                         string[] parts = line.Split(',');
                         if (parts.Length != 3)
                         {
@@ -112,7 +112,7 @@ namespace CraftingSim.Model
                             continue;
                         }
 
-                        // Tenta parse de id e quantidade
+                        
                         if (!int.TryParse(parts[0].Trim(), out int id))
                         {
                             Console.WriteLine($"Linha {lineNumber}: id inválido ('{parts[0]}'). Deve ser um número inteiro.");
@@ -138,7 +138,7 @@ namespace CraftingSim.Model
                             continue;
                         }
 
-                        // Cria um novo material e adiciona ao inventário
+                        
                         IMaterial material = new Material(id, name);
                         AddMaterial(material, quantity);
         }
